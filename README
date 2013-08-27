@@ -1,0 +1,8 @@
+within ipython:
+
+import pwrspec as ps
+ps.powerSpectrum()
+ps.plotPlin()
+
+[ps.plotTransferFunction()]
+installed cosmoloPy 12/12/07

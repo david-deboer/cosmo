@@ -18,7 +18,7 @@ for z in redshifts:
     age.append(n.DTT_Gyr)
 
 f = interpolate.interp1d(age,redshifts)
-ageLabels = [12.6,12.8,13.0,13.2,13.4,13.5,13.6]
+ageLabels = [12.6,13.0,13.2,13.4,13.5,13.6]
 xtics = f(ageLabels)
 for i,x in enumerate(xtics):
     print x,ageLabels[i]

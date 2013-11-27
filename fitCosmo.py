@@ -3,23 +3,39 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 import sys
-sys.path.append('/Users/ddeboer/Documents/Code/Lib')
-import fitlib
+#sys.path.append('/Users/ddeboer/Documents/Code/Lib')
+#import fitlib
+
+instrument = 'hera'
+
+if instrument=='hera':
+    restFreq = 1.42
+    BW = 0.006
+    nCh = 1024
+    zi = 7
+    zList = [6.0,12.0]
+    nurList = [1.42]
+    D = 14.0
+    coeff = 1.2
+elif instrument=='dacota':
+    restFreq = 230.0   # GHz
+    BW = 1.0           # GHz
+    nCh = 1024
+    zi = 7
+    zList = [3.0, 6.0]
+    nurList = [115.0, 230.0]
+    D = 1.2
+    coeff = 1.0 #?
 
 n = nedclass.ned()
-restFreq = 230.0   # GHz
-BW = 1.0           # GHz
-nCh = 1024
-zi = 7
 
-zList = [3.0, 6.0]
-nurList = [115.0, 230.0]
 
 ###Make fitCosmo1
 for restFreq in nurList:
     z = []  # redshift
     X = []  # X Mpc/rad
     Xb = [] # scaled version
+    Xinstr = []  # observed extent in Mpc
     Y = []  # Y Mpc/GHz
     DA = [] # angular scale term
     E = []  # Hubble parameter evolution
@@ -30,9 +46,8 @@ for restFreq in nurList:
     Y2fit = []  #     "    Y's   "
 
     # Loop over red-shift
-    for i in range(100):
-        zi = i*11./99.
-        z.append(zi)
+    z = np.arange(0.0,20,.1)
+    for zi in z:
         DAi = n.calcUniverse(zi)
         DA.append(DAi)
         Xi = DAi*(1.+zi)
@@ -42,6 +57,8 @@ for restFreq in nurList:
         Xbi = Xi/((180.0/math.pi)*1.0)  #convert to degrees
         X.append(Xi)
         Xb.append(Xbi)
+        Xbi = Xi*coeff*obsWavelength/D
+        Xinstr.append(Xbi)
         apX.append(4670.*pow(1.+zi,0.312))
         E.append(n.Ez)
         Yi = ( n.Ynu )/restFreq
@@ -58,13 +75,17 @@ for restFreq in nurList:
         lineColor = 'g'
     lineType = '-'
     lineChar = lineColor+lineType
+    Y = np.array(Y)
     if restFreq == nurList[0]:  #(only do once)
         plt.figure(1)
         #plt.subplot(211)
-        plt.plot(z,X,lineChar)
+        plt.semilogy(z,Xb,label='Beam scale (X) [Mpc/deg]')
         plt.xlabel('Z')
-        plt.ylabel('X [Mpc/rad]')#  and  Y [Mpc/GHz]')
-        plt.plot(z,apX)
+        plt.ylabel('Scale')
+        plt.semilogy(z,Y/1000.0,label='Band scale [Mpc/MHz]')
+        plt.semilogy(z,Xinstr,label='Beam [Mpc]')
+        plt.legend(loc='upper left')
+        plt.grid()
 
         ##fp = open('X.dat','w')
         ##for i,zi in enumerate(z):
@@ -72,9 +93,9 @@ for restFreq in nurList:
         ##    fp.write(s)
         ##fp.close()
 
-        z2fit = np.array(z2fit)
-        X2fit = np.array(X2fit)
-        fitlib.fit(z2fit, X2fit,showPlot=True)
+        #z2fit = np.array(z2fit)
+        #X2fit = np.array(X2fit)
+        #fitlib.fit(z2fit, X2fit,showPlot=True)
 
     lineType = '--'
     lineChar = lineColor+lineType

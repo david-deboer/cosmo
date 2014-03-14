@@ -1,11 +1,12 @@
 from math import *
 
 class ned:
-  def __init__(self,z=6.0, H0=70.0, WM=0.27, WV=None):
+  def __init__(self,z=6.0, H0=68.0, WM=0.3086, WV=0.6914):
     """Cosmology calculator ala Ned Wright (www.astro.ucla.edu/~wright)
       input values = redshift, Ho, Omega_m, Omega_vac
       ouput values = age at z, distance in Mpc, kpc/arcsec, apparent to abs mag conversion"""
 
+    print 'H0, WM, WV taken from Planck values as reported at wikipedia'
     self.z = z
     self.H0 = H0
     self.h = self.H0/100.0

@@ -6,11 +6,11 @@ import sys
 #sys.path.append('/Users/ddeboer/Documents/Code/Lib')
 #import fitlib
 
-instrument = 'hera'
+instrument = 'dacota'
 
 if instrument=='hera':
     restFreq = 1.42
-    BW = 0.006
+    BW = 0.01
     nCh = 1024
     zi = 7
     zList = [6.0,12.0]
@@ -23,7 +23,7 @@ elif instrument=='dacota':
     nCh = 1024
     zi = 7
     zList = [3.0, 6.0]
-    nurList = [115.0, 230.0]
+    nurList = [230.0]
     D = 1.2
     coeff = 1.0 #?
 
@@ -77,14 +77,16 @@ for restFreq in nurList:
     lineChar = lineColor+lineType
     Y = np.array(Y)
     if restFreq == nurList[0]:  #(only do once)
-        plt.figure(1)
+        plt.figure(instrument)
         #plt.subplot(211)
-        plt.semilogy(z,Xb,label='Beam scale (X) [Mpc/deg]')
-        plt.xlabel('Z')
-        plt.ylabel('Scale')
-        plt.semilogy(z,Y/1000.0,label='Band scale [Mpc/MHz]')
-        plt.semilogy(z,Xinstr,label='Beam [Mpc]')
-        plt.legend(loc='upper left')
+        #plt.semilogy(z,Xb,label='Beam scale (X) [Mpc/deg]')
+        plt.xlabel('Redshift [z]')
+        plt.ylabel('Size [Mpc]')
+        #plt.semilogy(z,Y/1000.0,label='Band scale [Mpc/MHz]')
+        plt.semilogy(z,Xinstr,label='Beamwidth (@%.1fm)'%(D),linewidth=2)
+        plt.semilogy(z,BW*Y,label='Bandwidth (@%.0fMHz)'%(1000*BW),linewidth=2)
+        #plt.legend(loc='upper left')
+        plt.legend(loc='lower right')
         plt.grid()
 
         ##fp = open('X.dat','w')

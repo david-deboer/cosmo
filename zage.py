@@ -40,7 +40,7 @@ agetics = f(ztics)
 zLabels = []
 ageLabels = []
 for i,z in enumerate(ztics):
-    print z, agetics[i]
+    #print z, agetics[i]
     zLabels.append('%.0f'%(z))
     ageLabels.append('%.2f'%(agetics[i]))
 zlim = [1091.0,0.4]
@@ -56,13 +56,17 @@ plt.rcParams.update({'font.size':16})
 plt.plot(redshifts,freq,linewidth=3)
 #eorband stuff
 g = interpolate.interp1d(freq[::dire],redshifts[::dire],bounds_error=True,fill_value=0.0)  # the ::-1 just reverses the array since I need increasing array
-eorband = [50.1,100.0,200.0,224.9]
+eorband = [50,100.0,200.0,225]
+eorz = g(eorband)
+eorages = f(eorz)
 eorcolor = ['b','k','k','b']
+print '\n\teor band'
+print '%6s  %6s  %9s  %7s' % ('MHz ','z  ','Myr  ','Gyr ')
 for i,e in enumerate(eorband):
-    z1 = g([eorband[i]])[0]
-    print eorband[i],z1
+    #z1 = g([eorband[i]])[0]
+    print '%6.1f  %6.2f  %9.3f  %7.3f' % (eorband[i],eorz[i],eorages[i]*1000.0,age_of_the_universe-eorages[i])
     clr = eorcolor[i]+'--'
-    plt.plot([z1,0.01],[eorband[i],eorband[i]],clr,linewidth=3)
+    plt.plot([eorz[i],0.01],[eorband[i],eorband[i]],clr,linewidth=3)
 
 #bottom&right axes
 ax1 = plt.subplot(111)
